@@ -6,6 +6,7 @@ import Card from '../common/Card.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import api from '../../config/api.js';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({ users: 0, workers: 0, pickups: 0, pendingPickups: 0, avgRating: 0 });
@@ -23,12 +24,12 @@ const Dashboard = () => {
     const fetchAll = async () => {
       try {
         const [statsRes, usersRes, workersRes, pickupsRes, feedbackRes, missedRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/admin/stats', { headers }),
-          axios.get('http://localhost:5000/api/admin/users', { headers }),
-          axios.get('http://localhost:5000/api/admin/workers', { headers }),
-          axios.get('http://localhost:5000/api/admin/pickups', { headers }),
-          axios.get('http://localhost:5000/api/admin/feedback', { headers }),
-          axios.get('http://localhost:5000/api/admin/missed', { headers }),
+          api.get('/api/admin/stats', { headers }),
+          api.get('/api/admin/users', { headers }),
+          api.get('/api/admin/workers', { headers }),
+          api.get('/api/admin/pickups', { headers }),
+          api.get('/api/admin/feedback', { headers }),
+          api.get('/api/admin/missed', { headers }),
         ]);
         setStats(statsRes.data);
         setUsers(usersRes.data);
@@ -50,7 +51,7 @@ const Dashboard = () => {
 
   const handleAssign = async (pickupId, workerId) => {
     try {
-      await axios.put('http://localhost:5000/api/admin/pickup/assign', { pickupId, workerId }, {
+      await api.put('/api/admin/pickup/assign', { pickupId, workerId }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       toast.success('Pickup assigned!');

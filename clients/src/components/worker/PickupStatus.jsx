@@ -6,6 +6,7 @@ import Modal from "../common/Modal.jsx";
 import Spinner from "../common/Spinner.jsx";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import api from "../../config/api.js";
 
 const PickupStatus = ({ pickup, setPickups }) => {
   const [status, setStatus] = useState(pickup.status);
@@ -21,19 +22,15 @@ const PickupStatus = ({ pickup, setPickups }) => {
     const payload = {
       pickupId: pickup._id,
       status: status,
-      image: imagePreview, // base64 string
+      imageUrl: imagePreview, // base64 string
     };
 
     try {
-      const res = await axios.put(
-        "http://localhost:5000/api/worker/pickup/status",
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const res = await api.put("/api/worker/pickup/status", payload, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       setPickups((prev) =>
         prev.map((p) =>
@@ -42,11 +39,10 @@ const PickupStatus = ({ pickup, setPickups }) => {
             : p
         )
       );
-      
+
       toast.success("Pickup status updated successfully!");
       setIsModalOpen(false);
       setError("");
-
     } catch (error) {
       const message = error.response?.data?.message || "Error updating status";
       setError(message);

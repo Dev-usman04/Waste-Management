@@ -13,15 +13,14 @@ exports.getAssignedPickups = async (req, res) => {
 };
 
 exports.updatePickupStatus = async (req, res) => {
-  const { pickupId, status } = req.body;
-  const { imageUrl } = req.body;
+  const { pickupId, status, imageUrl } = req.body;
   try {
     const pickup = await PickupRequest.findById(pickupId);
     if (!pickup || pickup.workerId.toString() !== req.user.id) {
       return res.status(403).json({ message: "Not authorized" });
     }
 
-    // let imageUrl = pickup.image;
+    let uploadedImage = ""
 
     if (imageUrl) {
       if (pickup.image) {
@@ -30,12 +29,11 @@ exports.updatePickupStatus = async (req, res) => {
         );
       }
       const result = await cloudinary.uploader.upload(imageUrl);
-      imageUrl = result.secure_url;
-      console.log(imageUrl);
+      uploadedImage = result.secure_url;
     }
 
     pickup.status = status;
-    pickup.image = imageUrl;
+    pickup.image = uploadedImage;
     await pickup.save();
     res.json(pickup);
   } catch (error) {

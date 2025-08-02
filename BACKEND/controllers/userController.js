@@ -5,22 +5,21 @@ const cloudinary = require("cloudinary").v2;
 
 exports.schedulePickup = async (req, res) => {
   const { address, pickupType, dateTime } = req.body;
-  const { imageUrl } = req.body;
+  const { image } = req.body;
   const userId = req.user.id;
   try {
-    // let imageUrl = '';
-    if (imageUrl) {
-      const result = await cloudinary.uploader.upload(imageUrl);
-      imageUrl = result.secure_url;
+    let uploadedImage = "";
+    if (image) {
+      const result = await cloudinary.uploader.upload(image);
+      uploadedImage = result.secure_url;
     }
-    console.log(imageUrl);
 
     const pickup = new PickupRequest({
       userId,
       address,
       pickupType,
       dateTime,
-      image: imageUrl,
+      image: uploadedImage,
     });
     await pickup.save();
     res.status(201).json(pickup);

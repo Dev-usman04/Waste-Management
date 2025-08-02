@@ -8,6 +8,7 @@ import Spinner from "../common/Spinner.jsx";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "../common/Modal.jsx";
+import api from "../../config/api.js";
 
 const PickupForm = () => {
   const { user } = useContext(AuthContext);
@@ -28,8 +29,8 @@ const PickupForm = () => {
 
   useEffect(() => {
     if (missedModalOpen) {
-      axios
-        .get("http://localhost:5000/api/user/pickup/history", {
+      api
+        .get("/api/user/pickup/history", {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         })
         .then((res) => setPickups(res.data))
@@ -48,7 +49,7 @@ const PickupForm = () => {
     };
 
     try {
-      await axios.post("http://localhost:5000/api/user/pickup", payload, {
+      await api.post("/api/user/pickup", payload, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setFormData({ address: "", pickupType: "", dateTime: "", image: null });
@@ -67,8 +68,8 @@ const PickupForm = () => {
     e.preventDefault();
     setMissedLoading(true);
     try {
-      await axios.post(
-        "http://localhost:5000/api/user/missed",
+      await api.post(
+        "/api/user/missed",
         {
           pickupId: selectedPickup,
           reason: missedReason,

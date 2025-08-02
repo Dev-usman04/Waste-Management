@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import Button from '../common/Button.jsx';
 import Card from '../common/Card.jsx';
+import api from '../../config/api.js';
 
 const TokenGenerator = () => {
   const [token, setToken] = useState('');
@@ -10,7 +11,7 @@ const TokenGenerator = () => {
 
   const generateToken = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/api/admin/token', {}, {
+      const res = await api.post('/api/admin/token', {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setToken(res.data.token);

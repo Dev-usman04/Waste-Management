@@ -6,6 +6,7 @@ import FeedbackForm from './FeedbackForm.jsx';
 import { AuthContext } from '../../context/AuthContext.jsx';
 import Card from '../common/Card.jsx';
 import { useNavigate } from 'react-router-dom';
+import api from '../../config/api.js';
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
@@ -15,7 +16,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchPickups = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/user/pickup/history', {
+        const res = await api.get('/api/user/pickup/history', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setPickups(res.data);

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import Button from '../common/Button.jsx';
 import { AuthContext } from '../../context/AuthContext.jsx';
+import api from '../../config/api.js';
 
 const FeedbackForm = ({ pickupId }) => {
   const { user } = useContext(AuthContext);
@@ -12,7 +13,7 @@ const FeedbackForm = ({ pickupId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/user/feedback', { ...formData, pickupId }, {
+      await api.post('/api/user/feedback', { ...formData, pickupId }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setFormData({ rating: 0, comment: '' });
