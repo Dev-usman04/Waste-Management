@@ -17,15 +17,17 @@ const PickupStatus = ({ pickup, setPickups }) => {
 
   const handleStatusUpdate = async () => {
     setLoading(true);
-    const data = new FormData();
-    data.append("pickupId", pickup._id);
-    data.append("status", status);
-    if (image) data.append("image", image);
+
+    const payload = {
+      pickupId: pickup._id,
+      status: status,
+      image: imagePreview, // base64 string
+    };
 
     try {
       const res = await axios.put(
         "http://localhost:5000/api/worker/pickup/status",
-        data,
+        payload,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

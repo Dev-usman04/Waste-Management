@@ -1,9 +1,11 @@
-const PickupRequest = require('../models/PickupRequest');
-const cloudinary = require('cloudinary').v2;
+const PickupRequest = require("../models/PickupRequest");
+const cloudinary = require("cloudinary").v2;
 
 exports.getAssignedPickups = async (req, res) => {
   try {
-    const pickups = await PickupRequest.find({ workerId: req.user.id }).populate('userId', 'name address');
+    const pickups = await PickupRequest.find({
+      workerId: req.user.id,
+    }).populate("userId", "name address");
     res.json(pickups);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -12,16 +14,24 @@ exports.getAssignedPickups = async (req, res) => {
 
 exports.updatePickupStatus = async (req, res) => {
   const { pickupId, status } = req.body;
+  const { imageUrl } = req.body;
   try {
     const pickup = await PickupRequest.findById(pickupId);
     if (!pickup || pickup.workerId.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized' });
+      return res.status(403).json({ message: "Not authorized" });
     }
 
-    let imageUrl = pickup.image;
-    if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path);
+    // let imageUrl = pickup.image;
+
+    if (imageUrl) {
+      if (pickup.image) {
+        await cloudinary.uploader.destroy(
+          pickup.image.split("/").pop().split(".")[0]
+        );
+      }
+      const result = await cloudinary.uploader.upload(imageUrl);
       imageUrl = result.secure_url;
+      console.log(imageUrl);
     }
 
     pickup.status = status;
