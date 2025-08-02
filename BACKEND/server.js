@@ -18,13 +18,10 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Multer setup for image uploads
-const upload = multer({ dest: 'uploads/' });
-
 // Routes
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/user', upload.single('image'), require('./routes/user'));
-app.use('/api/worker', upload.single('image'), require('./routes/worker'));
+app.use('/api/user', require('./routes/user'));
+app.use('/api/worker', require('./routes/worker'));
 app.use('/api/admin', require('./routes/admin'));
 app.get("/", (req, res) => {
   res.send("Welcome to the Waste Management API");
